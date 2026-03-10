@@ -1,7 +1,5 @@
 import hashlib
 from datetime import datetime
-
-
 class Block:
 
     def __init__(self, index, transaction, previousHash, difficulty):
@@ -13,7 +11,6 @@ class Block:
         self.timestamp = datetime.now()
         self.nonce = 0
         self.hash = self.mineBlock()
-
     def __str__(self):
         return f"""
 Block Index: {self.index}
@@ -51,7 +48,6 @@ Hash: {self.hash}
                 return hashValue
             else:
                 self.nonce += 1
-
 
 class Blockchain:
 
@@ -106,8 +102,6 @@ class Blockchain:
                 return False
 
         return True
-
-
 if __name__ == "__main__":
 
     blockchain = Blockchain(difficulty=3)
