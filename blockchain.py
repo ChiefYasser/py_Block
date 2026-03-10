@@ -53,15 +53,72 @@ Hash: {self.hash}
                 self.nonce += 1
 
 
+class Blockchain:
+
+    def __init__(self, difficulty=3):
+        """Constructor for Blockchain"""
+        self.chain = []
+        self.index = 0
+        self.difficulty = difficulty
+
+        # Genesis Block
+        genesis_block = Block(
+            index=0,
+            transaction="Genesis Block",
+            previousHash="0" * 64,
+            difficulty=self.difficulty
+        )
+
+        self.chain.append(genesis_block)
+
+    def getLastBlock(self):
+        """Return the last block of the chain"""
+        return self.chain[-1]
+
+    def AjouterBlock(self, transaction):
+        """Add a new block to the blockchain"""
+
+        self.index += 1
+
+        new_block = Block(
+            index=self.index,
+            transaction=transaction,
+            previousHash=self.getLastBlock().hash,
+            difficulty=self.difficulty
+        )
+
+        self.chain.append(new_block)
+
+    def checkChainValid(self):
+        """Verify if the blockchain is valid"""
+
+        for i in range(1, len(self.chain)):
+
+            current_block = self.chain[i]
+            previous_block = self.chain[i - 1]
+
+            # Check if the stored hash is correct
+            if current_block.hash != current_block.calculHash():
+                return False
+
+            # Check if previous hash matches
+            if current_block.previousHash != previous_block.hash:
+                return False
+
+        return True
+
+
 if __name__ == "__main__":
 
-    difficulty = 4
+    blockchain = Blockchain(difficulty=3)
 
-    block1 = Block(
-        index=1,
-        transaction="Alice sends 10 BTC to Bob",
-        previousHash="0000000000000",
-        difficulty=difficulty
-    )
+    blockchain.AjouterBlock("Alice sends 10 BTC to Bob")
+    blockchain.AjouterBlock("Bob sends 5 BTC to Charlie")
+    blockchain.AjouterBlock("Charlie sends 2 BTC to David")
 
-    print(block1)
+    print("\n----- BLOCKCHAIN -----")
+
+    for block in blockchain.chain:
+        print(block)
+
+    print("Blockchain valid:", blockchain.checkChainValid())
